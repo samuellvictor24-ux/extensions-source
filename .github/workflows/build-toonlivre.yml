@@ -10,13 +10,14 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
-      - name: Build extension
-        run: ./gradlew :src:pt:toonlivre:assembleRelease
-      - name: Show generated source
+      - name: Build extension (clean)
+        run: ./gradlew clean :src:pt:toonlivre:assembleRelease --rerun-tasks
+      - name: Search for mangalivre leftovers
         if: always()
         run: |
-          find src/pt/toonlivre/build/generated -type f -name "*.kt"
-          find src/pt/toonlivre/build/generated -type f -name "*.kt" -exec echo "--- {} ---" \; -exec cat {} \;
+          grep -r "mangalivre" src/pt/toonlivre/build --include="*.xml" -l || echo "no xml matches"
+          grep -r "mangalivre" src/pt/toonlivre/build --include="*.kt" -l || echo "no kt matches"
+          find src/pt/toonlivre/build -iname "AndroidManifest.xml" -exec echo "--- {} ---" \; -exec cat {} \;
       - uses: actions/upload-artifact@v4
         with:
           name: toonlivre-apk
