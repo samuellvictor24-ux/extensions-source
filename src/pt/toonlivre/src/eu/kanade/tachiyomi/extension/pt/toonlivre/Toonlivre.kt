@@ -21,7 +21,7 @@ abstract class Toonlivre : Madara() {
                 } else {
                     chain.proceed(request)
                 }
-            }
+            },
         )
         .build()
 }
