@@ -15,8 +15,8 @@ jobs:
       - name: Show generated source
         if: always()
         run: |
-          find . -iname "*Toonlivre*" -path "*generated*" 2>/dev/null
-          find . -iname "*Toonlivre*" -path "*generated*" -exec cat {} \;
+          find src/pt/toonlivre/build/generated -type f -name "*.kt"
+          find src/pt/toonlivre/build/generated -type f -name "*.kt" -exec echo "--- {} ---" \; -exec cat {} \;
       - uses: actions/upload-artifact@v4
         with:
           name: toonlivre-apk
