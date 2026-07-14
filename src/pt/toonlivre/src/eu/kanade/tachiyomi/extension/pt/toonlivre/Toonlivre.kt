@@ -8,11 +8,6 @@ import okhttp3.OkHttpClient
 @Source
 abstract class Toonlivre : Madara() {
 
-    // Desliga as chamadas AJAX que estão puxando o domínio morto do banco de dados do site
-    override val useLoadMoreRequest = false
-    override val useNewChapterEndpoint = false
-
-    // Mantém o interceptor de segurança para corrigir links perdidos
     override val client: OkHttpClient = super.client.newBuilder()
         .addInterceptor(
             Interceptor { chain ->
@@ -25,6 +20,22 @@ abstract class Toonlivre : Madara() {
                     chain.proceed(request.newBuilder().url(newUrl).build())
                 } else {
                     chain.proceed(request)
+                }
+            },
+        )
+        .addNetworkInterceptor(
+            Interceptor { chain ->
+                val request = chain.request()
+                val response = chain.proceed(request)
+                val location = response.header("Location")
+                if (location != null && (location.contains("mangalivre.net") || location.contains("mangalivre.tv"))) {
+                    val newLocation = location.replace("mangalivre.net", "toonlivre.net")
+                        .replace("mangalivre.tv", "toonlivre.net")
+                    response.newBuilder()
+                        .header("Location", newLocation)
+                        .build()
+                } else {
+                    response
                 }
             },
         )
