@@ -12,10 +12,7 @@ abstract class Toonlivre : Madara() {
     override val useLoadMoreRequest = false
     override val useNewChapterEndpoint = false
 
-    // Força a URL de formulários internos para o domínio novo
-    override val formAction: String = "https://toonlivre.net/wp-admin/admin-ajax.php"
-
-    // Mantém o interceptor de segurança para corrigir links de imagens perdidas
+    // Mantém o interceptor de segurança para corrigir links perdidos
     override val client: OkHttpClient = super.client.newBuilder()
         .addInterceptor(
             Interceptor { chain ->
